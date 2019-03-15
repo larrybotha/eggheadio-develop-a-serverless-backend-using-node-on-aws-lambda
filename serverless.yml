@@ -4,6 +4,12 @@ provider:
   name: aws
   runtime: nodejs8.10
   region: eu-west-1
+  # create IAM role to allow lambdas to add items to our dynamodb at the /todos resource
+  iamRoleStatments:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:eu-west-1:004206038398:table/todos"
 
 functions:
   helloWorld:
@@ -20,6 +26,13 @@ functions:
       - http:
           path: /
           method: GET
+  createTodo:
+    handler: handler.createTodo
+    # adding an event to a lambda requires a strict structure for repsonses
+    events:
+      - http:
+          path: /todos
+          method: POST
 
 resources:
   Resources:

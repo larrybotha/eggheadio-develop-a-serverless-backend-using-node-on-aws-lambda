@@ -102,3 +102,62 @@ To store data, we need a database
     4. throughput capacity for read and write access
 4. run `$ sls deploy` to have the serverless framework configure the application
 5. you can see the instance in your AWS console
+
+## Deploy an AWS Lambda function to store data in DynamoDB using the Serverless Framework
+
+By default, lambdas are not allowed to interact with databases. In order to
+allow access, we need to create an IAM role.
+
+The `serverless` framework allows for configuration of IAM roles instead of
+manually creating them.
+
+To create an IAM role for lambdas:
+
+1. add an `iamRoleStatements` property to the provider `property` with the
+   following details:
+
+    ```yaml
+    provider:
+      ...
+      iamRoleStatements:
+        - Effect: Allow
+          # we need to allow our functions to put items onto the dynamo db table
+          Action:
+            - dynamodb:PutItem
+          # arn:partition:service:region:account-id:resourcetype/resource
+          Resource: "arn:aws:dynamodb:es-east-1:12398712398:table/todos"
+    ```
+2. the `Resource` field has the following format:
+
+    ```
+    "arn:aws:dynamodb:us-east-1:12398712398:table/todos"
+     [1] [2]   [3]      [4]         [5]      [6]   [7]
+
+     1 - amazon resource name
+     2 - partition name
+     3 - service
+     4 - region
+     5 - account id
+     6 - resource type
+     7 - resource
+    ```
+
+    Further details can be found here: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-arns
+3. It's common to see configs with * for the resource - security is improved by
+   providing explicit access to resources, rather than wildcarding them
+4. we can leverage modules from the `aws-sdk` package directly from our lambda
+   files without having to install anything
+5. to create a DynamoDB client:
+
+    ```js
+    const AWS = require('aws-sdk')
+    const dynamoDbClient = AWS.DynamoDB.DocumentClient();
+    ```
+6. to write to a DynamoDB table:
+
+    ```js
+    await dynamoDbClient.put({
+      TableName: [tablename],
+      Item: {...itemProps}
+    }).promise()
+    ```

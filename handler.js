@@ -1,3 +1,9 @@
+const AWS = require('aws-sdk');
+const uuid = require('uuid/v4');
+
+// create client for interacting with dynamodb
+const dynamoDbDocClient = new AWS.DynamoDB.DocumentClient();
+
 /**
  * hello world lambda
  *
@@ -45,7 +51,39 @@ const helloGetEvent = async event => {
   };
 };
 
+/**
+ * createTodo
+ *
+ * @param {object} event - request data
+ * @returns {undefined}
+ */
+const createTodo = async event => {
+  const data = JSON.parse(event.body);
+  const params = {
+    TableName: 'todos',
+    Item: {
+      checked: false,
+      id: uuid(),
+      text: data.text,
+    },
+  };
+
+  try {
+    await dynamoDbDocClient.put(params).promise();
+    return {
+      statusCode: 200,
+      body: JSON.stringify(data),
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify(err),
+    };
+  }
+};
+
 module.exports = {
+  createTodo,
   helloAsync,
   helloGetEvent,
   helloPromise,

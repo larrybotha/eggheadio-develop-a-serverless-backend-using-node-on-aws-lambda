@@ -1,0 +1,24 @@
+{
+  "name": "eggheadio-develop-a-serverless-backend-using-node-on-aws-lambda",
+  "version": "1.0.0",
+  "description": "Notes and annotations for https://egghead.io/courses/develop-a-serverless-backend-using-node-js-on-aws-lambda",
+  "main": "handler.js",
+  "private": "true",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larrybotha/eggheadio-develop-a-serverless-backend-using-node-on-aws-lambda.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/larrybotha/eggheadio-develop-a-serverless-backend-using-node-on-aws-lambda/issues"
+  },
+  "homepage": "https://github.com/larrybotha/eggheadio-develop-a-serverless-backend-using-node-on-aws-lambda#readme",
+  "dependencies": {
+    "uuid": "3.3.2"
+  }
+}
